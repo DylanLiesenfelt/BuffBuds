@@ -29,8 +29,20 @@ def login():
         })
 
         if res.user:
-            session["user"] = {"id": res.user.id, "email": res.user.email}
-            return jsonify({"message": "Login Successful", "user": res.user.email}), 200
+            # fetch username from user_profile
+            profile = supabase.table("user_profile").select("username").eq("id", res.user.id).single().execute()
+            username = profile.data["username"] if profile.data else None
+
+            # store user info in session
+            session["user"] = {
+                "id": res.user.id,
+                "email": res.user.email,
+                "username": username
+            }
+            return jsonify({
+                "message": "Login Successful",
+                "user": session["user"]
+            }), 200
         
         return jsonify({"error": "Email or Password Incorrect"}), 401
     

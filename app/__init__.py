@@ -21,7 +21,7 @@ def create_app(config_object='app.config.DevelopmentConfig'):
         CORS(
             app,
             resources={r"/*": {"origins": [
-                "https://buffbuds.netlify.app",
+                "https://buffbuds.netlify.app"
             ]}},
             supports_credentials=True,
             automatic_options=True
