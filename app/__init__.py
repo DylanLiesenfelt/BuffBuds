@@ -6,7 +6,7 @@ import logging
 from flask_cors import CORS
 
 # intializing in default config mode for testing purposes, can be changed to ProductionConfig later
-def create_app(config_object='app.config.ProductionConfig'):
+def create_app(config_object='app.config.DevelopmentConfig'):
     app = Flask(__name__)
     
     # logging instead of print, allows for debug messages to be entered and displayed only when needed
