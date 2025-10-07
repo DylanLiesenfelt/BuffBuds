@@ -2,6 +2,7 @@ from flask import Flask
 from .routes.api import api_bp
 from .routes.auth import auth_bp
 from .routes.user import user_bp
+from .routes.posts import posts_bp
 import logging
 from flask_cors import CORS
 
@@ -17,20 +18,24 @@ def create_app(config_object='app.config.DevelopmentConfig'):
         logger.info("CREATING APP...")
         app.config.from_object(config_object)
 
-        # allow Netlify frontend
         CORS(
             app,
-            resources={r"/*": {"origins": [
+            origins=[
+                "http://localhost:5173",
+                "http://127.0.0.1:5173",
+                "http://localhost:5174",
+                "http://127.0.0.1:5174",
                 "https://buffbuds.netlify.app"
-            ]}},
-            supports_credentials=True,
-            automatic_options=True
+            ],
+            supports_credentials=True
         )
+
         
         # registering Blueprints
         app.register_blueprint(api_bp, url_prefix='/api')
         app.register_blueprint(auth_bp, url_prefix='/auth')
         app.register_blueprint(user_bp, url_prefix='/user')
+        app.register_blueprint(posts_bp, url_prefix='/posts')
 
         logger.info('APP CREATED!')
 
