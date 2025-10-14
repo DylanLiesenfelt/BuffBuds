@@ -45,7 +45,7 @@ def get_posts():
     Fetch all posts.
     """
     response = supabase.table("Posts").select(
-        "id, content, like_count, comments, created_at, title, user_profile!Posts_user_id_fkey(username)"   
+        "id, content, like_count, comments, created_at, title, liked_by, user_profile!Posts_user_id_fkey(username)"   
     ).execute()
     return jsonify(response.data), 200
 
@@ -56,7 +56,7 @@ def get_post(post_id):
     Fetch a single post by ID.
     """
     response = supabase.table("Posts").select(
-        "id, content, like_count, comments, created_at, title, user_profile!Posts_user_id_fkey(username)"   
+        "id, content, like_count, comments, created_at, title, liked_by, user_profile!Posts_user_id_fkey(username)"   
     ).eq("id", post_id).execute()
     if not response.data:
         return jsonify({"error": "Post not found"}), 404
@@ -69,17 +69,61 @@ def get_post(post_id):
 @posts_bp.route("/<post_id>/like", methods=["POST"])
 def like_post(post_id):
     """
-    Increment like_count for a post.
-    - No user restriction, anyone can like.
+    Adds the current user's ID to liked_by and increments like_count.
     """
-    post = supabase.table("Posts").select("like_count").eq("id", post_id).single().execute()
+    if "user" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    user_id = session["user"]["id"]
+
+    post = supabase.table("Posts").select("like_count, liked_by").eq("id", post_id).single().execute()
     if not post.data:
         return jsonify({"error": "Post not found"}), 404
 
-    new_count = post.data["like_count"] + 1
-    response = supabase.table("Posts").update({"like_count": new_count}).eq("id", post_id).execute()
-    return jsonify(response.data[0]), 200
+    liked_by = post.data.get("liked_by") or []
+    like_count = post.data.get("like_count") or 0
 
+    if user_id not in liked_by:
+        liked_by.append(user_id)
+        like_count += 1
+
+        supabase.table("Posts").update({
+            "like_count": like_count,
+            "liked_by": liked_by
+        }).eq("id", post_id).execute()
+
+    return jsonify({"like_count": like_count, "liked_by": liked_by}), 200
+
+# ----------------------------
+# UNLIKE A POST
+# ----------------------------
+@posts_bp.route("/<post_id>/unlike", methods=["PUT"])
+def unlike_post(post_id):
+    """
+    Removes the current user's ID from liked_by and decrements like_count.
+    """
+    if "user" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    user_id = session["user"]["id"]
+
+    post = supabase.table("Posts").select("like_count, liked_by").eq("id", post_id).single().execute()
+    if not post.data:
+        return jsonify({"error": "Post not found"}), 404
+
+    liked_by = post.data.get("liked_by") or []
+    like_count = post.data.get("like_count") or 0
+
+    if user_id in liked_by:
+        liked_by.remove(user_id)
+        like_count = max(0, like_count - 1)
+
+        supabase.table("Posts").update({
+            "like_count": like_count,
+            "liked_by": liked_by
+        }).eq("id", post_id).execute()
+
+    return jsonify({"like_count": like_count, "liked_by": liked_by}), 200
 
 # ----------------------------
 # ADD COMMENT
