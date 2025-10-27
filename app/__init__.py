@@ -7,6 +7,8 @@ from .routes.workout import workouts_bp
 import logging
 from flask_cors import CORS
 from flask_session import Session
+from werkzeug.middleware.proxy_fix import ProxyFix
+
 
 
 # intializing in default config mode for testing purposes, can be changed to ProductionConfig later
@@ -38,6 +40,7 @@ def create_app(config_object='app.config.DevelopmentConfig'):
         app.config["SESSION_USE_SIGNER"] = True
         app.config["SESSION_COOKIE_HTTPONLY"] = True
         Session(app)
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
         # registering Blueprints
         app.register_blueprint(api_bp, url_prefix='/api')
