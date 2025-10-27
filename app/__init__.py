@@ -6,6 +6,7 @@ from .routes.posts import posts_bp
 from .routes.workout import workouts_bp
 import logging
 from flask_cors import CORS
+from flask_session import Session
 
 
 # intializing in default config mode for testing purposes, can be changed to ProductionConfig later
@@ -31,8 +32,6 @@ def create_app(config_object='app.config.DevelopmentConfig'):
             ],
             supports_credentials=True
         )
-
-        from flask_session import Session
 
         app.config["SESSION_TYPE"] = "filesystem"  # persists between restarts
         app.config["SESSION_PERMANENT"] = True
