@@ -1,0 +1,129 @@
+{
+  "exercises": {
+    "legs": {
+      "compound": [
+        "Back Squat",
+        "Front Squat",
+        "Deadlift",
+        "Sumo Deadlift",
+        "Leg Press",
+        "Walking Lunges",
+        "Bulgarian Split Squat"
+      ],
+      "functional": [
+        "Step-ups",
+        "Box Jumps",
+        "Kettlebell Swings",
+        "Broad Jumps",
+        "Glute Bridges",
+        "Single-leg Romanian Deadlift",
+        "Farmer's Carry"
+      ],
+      "isolated": [
+        "Leg Extensions",
+        "Hamstring Curls",
+        "Calf Raises",
+        "Seated Calf Raises",
+        "Hip Abductions",
+        "Hip Adductions",
+        "Glute Kickbacks"
+      ]
+    },
+    "push": {
+      "compound": [
+        "Bench Press",
+        "Incline Bench Press",
+        "Overhead Press",
+        "Push Press",
+        "Dips",
+        "Close-grip Bench Press",
+        "Arnold Press"
+      ],
+      "functional": [
+        "Push-ups",
+        "Plyometric Push-ups",
+        "Medicine Ball Chest Pass",
+        "Kettlebell Overhead Press",
+        "Handstand Push-ups",
+        "Battle Ropes (Push motions)",
+        "Sledgehammer Swings"
+      ],
+      "isolated": [
+        "Tricep Skull Crushers",
+        "Tricep Kickbacks",
+        "Lateral Raises",
+        "Front Raises",
+        "Chest Flys",
+        "Cable Tricep Pushdown",
+        "Dumbbell Chest Fly"
+      ]
+    },
+    "pull": {
+      "compound": [
+        "Barbell Row",
+        "Pendlay Row",
+        "Pull-ups",
+        "Chin-ups",
+        "Deadlift",
+        "T-bar Row",
+        "Inverted Rows"
+      ],
+      "functional": [
+        "Kettlebell Swings",
+        "Farmer's Carry",
+        "TRX Rows",
+        "Battle Ropes (Pull motions)",
+        "Sled Pull",
+        "Renegade Rows",
+        "Sandbag Carries"
+      ],
+      "isolated": [
+        "Bicep Curls",
+        "Hammer Curls",
+        "Concentration Curls",
+        "Face Pulls",
+        "Reverse Fly",
+        "Cable Rope Bicep Curl",
+        "Preacher Curls"
+      ]
+    },
+    "push_pull_split": {
+      "push_day": {
+        "compound": [
+          "Bench Press",
+          "Overhead Press",
+          "Dips",
+          "Close-grip Bench Press"
+        ],
+        "functional": [
+          "Push-ups",
+          "Medicine Ball Chest Pass",
+          "Handstand Push-ups"
+        ],
+        "isolated": [
+          "Tricep Skull Crushers",
+          "Lateral Raises",
+          "Tricep Kickbacks"
+        ]
+      },
+      "pull_day": {
+        "compound": [
+          "Barbell Row",
+          "Pull-ups",
+          "Deadlift",
+          "T-bar Row"
+        ],
+        "functional": [
+          "TRX Rows",
+          "Farmer's Carry",
+          "Battle Ropes (Pull motions)"
+        ],
+        "isolated": [
+          "Bicep Curls",
+          "Face Pulls",
+          "Hammer Curls"
+        ]
+      }
+    }
+  }
+}

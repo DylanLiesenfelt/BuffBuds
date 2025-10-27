@@ -1,0 +1,65 @@
+{
+  "workoutPlan": {
+    "name": "Full Body Workout",
+    "description": "A comprehensive full-body workout targeting major muscle groups.",
+    "durationMinutes": 60,
+    "exercises": [
+      {
+        "name": "Bench Press",
+        "type": "strength",
+        "sets": 4,
+        "reps": 8,
+        "restSeconds": 90
+      },
+      {
+        "name": "Barbell Row",
+        "type": "strength",
+        "sets": 4,
+        "reps": 8,
+        "restSeconds": 90
+      },
+      {
+        "name": "Squat and Press",
+        "type": "strength",
+        "sets": 3,
+        "reps": 10,
+        "restSeconds": 90
+      },
+      {
+        "name": "Skull Crushers",
+        "type": "strength",
+        "sets": 3,
+        "reps": 12,
+        "restSeconds": 60
+      },
+      {
+        "name": "Bicep Curl",
+        "type": "strength",
+        "sets": 3,
+        "reps": 12,
+        "restSeconds": 60
+      },
+      {
+        "name": "Lateral Raises",
+        "type": "strength",
+        "sets": 3,
+        "reps": 15,
+        "restSeconds": 60
+      },
+      {
+        "name": "Leg Extensions",
+        "type": "strength",
+        "sets": 4,
+        "reps": 12,
+        "restSeconds": 60
+      },
+      {
+        "name": "Hamstring Curls",
+        "type": "strength",
+        "sets": 4,
+        "reps": 12,
+        "restSeconds": 60
+      }
+    ]
+  }
+}
