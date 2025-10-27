@@ -32,7 +32,14 @@ def create_app(config_object='app.config.DevelopmentConfig'):
             supports_credentials=True
         )
 
-        
+        from flask_session import Session
+
+        app.config["SESSION_TYPE"] = "filesystem"  # persists between restarts
+        app.config["SESSION_PERMANENT"] = True
+        app.config["SESSION_USE_SIGNER"] = True
+        app.config["SESSION_COOKIE_HTTPONLY"] = True
+        Session(app)
+
         # registering Blueprints
         app.register_blueprint(api_bp, url_prefix='/api')
         app.register_blueprint(auth_bp, url_prefix='/auth')
