@@ -65,8 +65,8 @@ def update_user(username):
 
     try:
         response = supabase.table("user_profile").update({
-            "username": data.get("username"),
-            "user_bio": data.get("user_bio"),
+            "username": data.get("username"), # type: ignore
+            "user_bio": data.get("user_bio"), # type: ignore
             "updated_at": "now()"
         }).eq("id", user["id"]).execute()
 
@@ -144,8 +144,8 @@ def follow_user(username):
         "followed_id": followed_id
     }).execute()
 
-    if insert_res.error:
-        return jsonify({"error": insert_res.error.message}), 500
+    if insert_res.error: # type: ignore
+        return jsonify({"error": insert_res.error.message}), 500 # type: ignore
 
     return jsonify({"message": f"Started following {username}"}), 201
 
@@ -176,8 +176,8 @@ def unfollow_user(username):
     # remove the following status
     delete_res = supabase.table("followers").delete().eq("follower_id", follower_id).eq("followed_id", followed_id).execute()
 
-    if delete_res.error:
-        return jsonify({"error": delete_res.error.message}), 500
+    if delete_res.error: # type: ignore
+        return jsonify({"error": delete_res.error.message}), 500 # type: ignore
 
     if delete_res.count == 0:
         # not following that user in the first place
@@ -299,8 +299,8 @@ def like_user(username):
         "liked_user_id": liked_user_id
     }).execute()
 
-    if insert_res.error:
-        return jsonify({"error": insert_res.error.message}), 500
+    if insert_res.error: # type: ignore
+        return jsonify({"error": insert_res.error.message}), 500 # type: ignore
 
     return jsonify({"message": f"You liked {username}"}), 201
 
@@ -331,8 +331,8 @@ def unlike_user(username):
     # delete the like
     delete_res = supabase.table("user_likes").delete().eq("user_id", user_id).eq("liked_user_id", liked_user_id).execute()
 
-    if delete_res.error:
-        return jsonify({"error": delete_res.error.message}), 500
+    if delete_res.error: # type: ignore
+        return jsonify({"error": delete_res.error.message}), 500 # type: ignore
 
     if delete_res.count == 0:
         return jsonify({"message": "You had not liked this user"}), 200

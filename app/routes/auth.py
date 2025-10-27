@@ -52,14 +52,12 @@ def login():
 
 @auth_bp.route('/signup', methods=['POST'])
 def signup():
-
     """
     User Signup Route
 
-    Uses Supabase auth to create a new user with email and password.
-    On successful signup, also creates a user profile in 'user_profile' table.
-    Expects JSON payload with 'email', 'password', and 'username'.
-    Returns JSON response with success or error message.
+    Uses Supabase Auth to create a new user with email and password.
+    Passes `username` as metadata so that the Supabase trigger
+    can automatically create the `user_profile` once the user verifies.
     """
 
     data = request.json
@@ -73,21 +71,19 @@ def signup():
     try:
         res = supabase.auth.sign_up({
             "email": email,
-            "password": password
+            "password": password,
+            "options": {
+                "data": {"username": username}
+            }
         })
 
-        if res.user:
-            # INSERT to user_profile table
-            supabase.table("user_profile").insert({
-                "id": res.user.id,        
-                "username": username,
-                "created_at": "now()",
-                "updated_at": "now()"
-            }).execute()
-            return jsonify({"message": "User created", "user": res.user.email}), 201
-        
-        return jsonify({"error": "Signup failed"}), 400
-    
+        print("Signup response:", res)
+
+        return jsonify({
+            "message": "Signup successful. Please verify your email to activate your account.",
+            "email": email
+        }), 201
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     

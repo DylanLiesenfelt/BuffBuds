@@ -22,9 +22,14 @@ def create_post():
     user = session["user"]  # user profile from login
     data = request.get_json()
 
+    profile = supabase.table("user_profile").select("id").eq("id", user["id"]).single().execute()
+
+    if not profile.data:
+        return jsonify({"error": "User profile not found"}), 404
+
     post = {
         "id": str(uuid.uuid4()),
-        "user_id": user["id"],  # FK to user_profile (for stricter ownership checks)
+        "user_id": profile.data["id"],
         "content": data.get("content"),
         "like_count": 0,
         "comments": [],
@@ -227,11 +232,24 @@ def get_user_posts(username):
     Fetch all posts created by a given user.
     Joins against user_profile to filter by username.
     """
-    response = supabase.table("Posts").select(
-        "id, content, like_count, comments, created_at, title, user_profile!Posts_user_id_fkey(username)"
-    ).eq("user_profile.username", username).execute()
+    profile = (
+        supabase.table("user_profile")
+        .select("id")
+        .eq("username", username)
+        .single()
+        .execute()
+    )
 
-    if not response.data:
-        return jsonify([]), 200 
+    if not profile.data:
+        return jsonify([]), 200
 
-    return jsonify(response.data), 200
+    user_id = profile.data["id"]
+
+    response = (
+        supabase.table("Posts")
+        .select("id, content, like_count, comments, created_at, title, user_id")
+        .eq("user_id", user_id)
+        .order("created_at", desc=True)
+        .execute()
+    )
+    return jsonify(response.data or []), 200
