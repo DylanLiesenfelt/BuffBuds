@@ -1,9 +1,9 @@
+flask
 supabase
 python-dotenv
 requests
 app
 gunicorn
 flask-cors
-flask
 flask_session
 werkzeug

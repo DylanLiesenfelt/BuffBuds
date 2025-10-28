@@ -3,12 +3,12 @@ from .routes.api import api_bp
 from .routes.auth import auth_bp
 from .routes.user import user_bp
 from .routes.posts import posts_bp
-from .routes.workout import workouts_bp
+from .routes.log import workout_logs_bp
+from .routes.workout_plans import workout_plans_bp
 import logging
 from flask_cors import CORS
 from flask_session import Session
 from werkzeug.middleware.proxy_fix import ProxyFix
-
 
 
 # intializing in default config mode for testing purposes, can be changed to ProductionConfig later
@@ -25,15 +25,17 @@ def create_app(config_object='app.config.DevelopmentConfig'):
 
         CORS(
             app,
-            origins=[
+            resources={r"/*": {"origins": [
                 "http://localhost:5173",
                 "http://127.0.0.1:5173",
                 "http://localhost:5174",
                 "http://127.0.0.1:5174",
                 "https://buffbuds.netlify.app"
-            ],
-            supports_credentials=True
+            ]}},
+            supports_credentials=True,
         )
+
+
 
         app.config["SESSION_TYPE"] = "filesystem"  # persists between restarts
         app.config["SESSION_PERMANENT"] = True
@@ -42,12 +44,14 @@ def create_app(config_object='app.config.DevelopmentConfig'):
         Session(app)
         app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
+
         # registering Blueprints
         app.register_blueprint(api_bp, url_prefix='/api')
         app.register_blueprint(auth_bp, url_prefix='/auth')
         app.register_blueprint(user_bp, url_prefix='/user')
         app.register_blueprint(posts_bp, url_prefix='/posts')
-        app.register_blueprint(workouts_bp, url_prefix='/workout')
+        app.register_blueprint(workout_logs_bp, url_prefix='/workout')
+        app.register_blueprint(workout_plans_bp, url_prefix='/plans')
 
 
         logger.info('APP CREATED!')
