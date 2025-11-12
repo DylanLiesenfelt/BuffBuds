@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Header from "../components/Header";
-import { createWorkoutSession } from "../services/api";
+import { createWorkoutSession, createPost } from "../services/api";
 
 const WorkoutSession = ({ username, setIsAuthed, setUsername }) => {
   const location = useLocation();
@@ -59,8 +59,19 @@ const WorkoutSession = ({ username, setIsAuthed, setUsername }) => {
         },
       };
 
+      // Create workout session
       await createWorkoutSession(payload);
-      alert("Workout session logged successfully!");
+
+      // Automatically create a post with the workout summary
+      const postPayload = {
+        title: `Completed: ${plan.plan_name}`,
+        content: `Just finished my workout! 💪`,
+        workout_data: payload.workoutPlan,
+      };
+      
+      await createPost(postPayload);
+
+      alert("Workout session logged and shared successfully!");
       navigate("/");
     } catch (err) {
       console.error("Failed to submit session:", err);

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Heart, MessageCircle, Clock } from "lucide-react";
 import { likePost, unlikePost } from "../services/api";
+import WorkoutSummary from "./WorkoutSummary";
 
 const Post = ({ post, currentUserId }) => {
   const [liked, setLiked] = useState(false);
@@ -47,6 +48,11 @@ const Post = ({ post, currentUserId }) => {
       <div className="text-gray-700 leading-relaxed whitespace-pre-wrap mb-4">
         {post.content}
       </div>
+
+      {/* Render WorkoutSummary if workout data exists */}
+      {post.workout_data && (
+        <WorkoutSummary workoutData={post.workout_data} />
+      )}
 
       <footer className="flex items-center justify-between text-sm text-gray-600 border-t border-gray-100 pt-3">
         <div className="flex gap-4">
