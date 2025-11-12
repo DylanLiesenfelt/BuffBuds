@@ -9,7 +9,7 @@ posts_bp = Blueprint("posts", __name__)
 # ----------------------------
 # CREATE POST
 # ----------------------------
-@posts_bp.route("/", methods=["POST"])
+@posts_bp.route("", methods=["POST"], strict_slashes=False)
 def create_post():
     """
     Create a new post.
@@ -34,7 +34,8 @@ def create_post():
         "like_count": 0,
         "comments": [],
         "created_at": datetime.now(datetime.timezone.utc).isoformat(),
-        "title": data.get("title")
+        "title": data.get("title"),
+        "workout_data": data.get("workout_data")
     }
 
     response = supabase.table("Posts").insert(post).execute()
@@ -44,13 +45,13 @@ def create_post():
 # ----------------------------
 # READ POSTS
 # ----------------------------
-@posts_bp.route("/", methods=["GET"])
+@posts_bp.route("", methods=["GET"], strict_slashes=False)
 def get_posts():
     """
     Fetch all posts.
     """
     response = supabase.table("Posts").select(
-        "id, content, like_count, comments, created_at, title, liked_by, user_profile!Posts_user_id_fkey(username)"   
+        "id, content, like_count, comments, created_at, title, liked_by, workout_data, user_profile!Posts_user_id_fkey(username)"   
     ).execute()
     return jsonify(response.data), 200
 
@@ -61,7 +62,7 @@ def get_post(post_id):
     Fetch a single post by ID.
     """
     response = supabase.table("Posts").select(
-        "id, content, like_count, comments, created_at, title, liked_by, user_profile!Posts_user_id_fkey(username)"   
+        "id, content, like_count, comments, created_at, title, liked_by, workout_data, user_profile!Posts_user_id_fkey(username)"   
     ).eq("id", post_id).execute()
     if not response.data:
         return jsonify({"error": "Post not found"}), 404
@@ -247,7 +248,7 @@ def get_user_posts(username):
 
     response = (
         supabase.table("Posts")
-        .select("id, content, like_count, comments, created_at, title, user_id")
+        .select("id, content, like_count, comments, created_at, title, user_id, workout_data")
         .eq("user_id", user_id)
         .order("created_at", desc=True)
         .execute()
