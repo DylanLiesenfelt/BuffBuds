@@ -7,6 +7,3 @@ gunicorn
 flask-cors
 flask_session
 werkzeug
-pydantic
-uuid
-typing

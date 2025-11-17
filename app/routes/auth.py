@@ -113,6 +113,26 @@ def status():
         return jsonify({"authenticated": True, "user": user}), 200
     return jsonify({"authenticated": False}), 200
 
+@auth_bp.route("/reset-password", methods=["POST"])
+def reset_password():
+    """
+    Reset Password via Supabase access token.
+    Frontend sends { "password": "...", "access_token": "..." }.
+    """
+    data = request.get_json()
+    password = data.get("password")
+    token = data.get("access_token")
+
+    if not password or not token:
+        return jsonify({"error": "Missing password or token"}), 400
+
+    try:
+        res = supabase.auth.api.update_user(token, {"password": password})
+        if res.get("error"):
+            return jsonify({"error": res["error"]["message"]}), 400
+        return jsonify({"message": "Password updated successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 """
 Authentication Routes
