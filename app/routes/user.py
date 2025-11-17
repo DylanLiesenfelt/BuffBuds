@@ -372,3 +372,35 @@ def get_likes(username):
     likers = [u["username"] for u in users_res.data]
 
     return jsonify({"likes": likers})
+
+@user_bp.route("/volume-history", methods=["GET"])
+def get_volume_history():
+    if "user" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    user_id = session["user"]["id"]
+
+    response = supabase.table("user_profile") \
+        .select("volume_history") \
+        .eq("id", user_id) \
+        .single() \
+        .execute()
+
+    # ----------------------------------------------------------------
+    # FIX: SingleAPIResponse DOES NOT have .error — only .data exists
+    # ----------------------------------------------------------------
+    if response.data is None:
+        return jsonify({"error": "No profile found"}), 404
+
+    volume_history = response.data.get("volume_history", [])
+
+    # Ensure JSON serializable datetime
+    safe_history = []
+    for item in volume_history:
+        safe_history.append({
+            "date": str(item["date"]),
+            "volume": item["volume"]
+        })
+
+    return jsonify(safe_history), 200
+
