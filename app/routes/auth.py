@@ -5,16 +5,6 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/login', methods= ['POST'])
 def login():
-
-    """
-    User Login Route
-
-    Uses Supabase auth to sign in with email and password.
-    On successful login, stores user info in session.
-    Expects JSON payload with 'email' and 'password'.
-    Returns JSON response with success or error message.
-    """
-
     data = request.json
     email = data.get("email")
     password = data.get(("password"))
@@ -29,16 +19,26 @@ def login():
         })
 
         if res.user:
-            # fetch username from user_profile
-            profile = supabase.table("user_profile").select("username").eq("id", res.user.id).single().execute()
+            # fetch username and admin status from user_profile
+            profile = supabase.table("user_profile").select("username, admin").eq("id", res.user.id).single().execute()
+            
+            print("Profile data:", profile.data)  # Debug log
+            
             username = profile.data["username"] if profile.data else None
+            is_admin = profile.data.get("admin", False) if profile.data else False
+            
+            print(f"Username: {username}, is_admin: {is_admin}")  # Debug log
 
             # store user info in session
             session["user"] = {
                 "id": res.user.id,
                 "email": res.user.email,
-                "username": username
+                "username": username,
+                "admin": is_admin  # NEW
             }
+            
+            print("Session user:", session["user"])  # Debug log
+            
             return jsonify({
                 "message": "Login Successful",
                 "user": session["user"]
@@ -52,14 +52,6 @@ def login():
 
 @auth_bp.route('/signup', methods=['POST'])
 def signup():
-    """
-    User Signup Route
-
-    Uses Supabase Auth to create a new user with email and password.
-    Passes `username` as metadata so that the Supabase trigger
-    can automatically create the `user_profile` once the user verifies.
-    """
-
     data = request.json
     email = data.get("email")
     password = data.get("password")
@@ -90,15 +82,6 @@ def signup():
 
 @auth_bp.route("/logout", methods=["POST"])
 def logout():
-
-    """
-    User Logout Route
-
-    Clears user session on logout.
-    Expects no additional data.
-    Returns JSON response with success or error message.
-    """
-
     if "user" not in session:
         return jsonify({"error": "Unauthorized"}), 401
     
@@ -115,10 +98,6 @@ def status():
 
 @auth_bp.route("/reset-password", methods=["POST"])
 def reset_password():
-    """
-    Reset Password via Supabase access token.
-    Frontend sends { "password": "...", "access_token": "..." }.
-    """
     data = request.get_json()
     password = data.get("password")
     token = data.get("access_token")
@@ -133,27 +112,3 @@ def reset_password():
         return jsonify({"message": "Password updated successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-"""
-Authentication Routes
-
-This file contains routes related to user authentication and authorization,
-including login, signup, logout, and possibly token refresh endpoints.
-
-HTTP Methods for Flask Routes:
-
-| Method  | Description                     | Use Case Example                     |
-|---------|---------------------------------|------------------------------------|
-| GET     | Retrieve or display data         | Show a webpage or fetch info       |
-| POST    | Submit or create data            | Handle form submissions            |
-| PUT     | Replace or update existing data  | Update a full resource             |
-| PATCH   | Partially update existing data   | Update part of a resource          |
-| DELETE  | Remove data                     | Delete a resource                  |
-
-Notes:
-- If 'methods' is not specified, Flask defaults to ['GET'].
-- Specify 'methods' when your route needs to handle POST, PUT, DELETE, etc.
-- When using address bar in browser for testing the route, GET is used
-- http://127.0.0.1:5000/ + route (/api/ for main routes)
-
-"""

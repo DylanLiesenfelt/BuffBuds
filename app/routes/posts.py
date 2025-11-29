@@ -9,7 +9,8 @@ posts_bp = Blueprint("posts", __name__)
 # ----------------------------
 # CREATE POST
 # ----------------------------
-@posts_bp.route("/", methods=["POST"])
+@posts_bp.route("", methods=["POST"])  # Changed from "/" to ""
+@posts_bp.route("/", methods=["POST"])  # Keep this for compatibility
 def create_post():
     """
     Create a new post.
@@ -43,7 +44,8 @@ def create_post():
 # ----------------------------
 # READ POSTS
 # ----------------------------
-@posts_bp.route("/", methods=["GET"])
+@posts_bp.route("", methods=["GET"])  # Changed from "/" to ""
+@posts_bp.route("/", methods=["GET"])  # Keep this for compatibility
 def get_posts():
     """
     Fetch all posts.

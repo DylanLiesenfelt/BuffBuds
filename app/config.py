@@ -20,8 +20,9 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     ENV = 'development'
-    SESSION_COOKIE_SAMESITE = "Lax"
-    SESSION_COOKIE_SECURE = False  
+    SESSION_COOKIE_SAMESITE = "None"
+    SESSION_COOKIE_SECURE = True
+
     
 class ProductionConfig(Config):
     DEBUG = False

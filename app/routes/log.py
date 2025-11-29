@@ -51,12 +51,12 @@ def get_user_workout_sessions():
         return jsonify({"error": "Unauthorized"}), 401
 
     user_id = session["user"]["id"]
-    response = supabase.table("workout_session").select("*").eq("user_id", user_id).execute()
-
-    if response.error:
+    
+    try:
+        response = supabase.table("workout_session").select("*").eq("user_id", user_id).execute()
+        return jsonify(response.data), 200
+    except Exception as e:
         return jsonify({"error": "Failed to fetch sessions"}), 500
-
-    return jsonify(response.data), 200
 
 
 # ----------------------------
@@ -90,12 +90,11 @@ def update_workout_session(session_id):
             return jsonify({"errors": e.errors()}), 400
 
     # Perform update
-    update_response = supabase.table("workout_session").update(updates).eq("id", session_id).execute()
-
-    if update_response.error:
+    try:
+        update_response = supabase.table("workout_session").update(updates).eq("id", session_id).execute()
+        
+        # Return the updated session
+        updated_session = supabase.table("workout_session").select("*").eq("id", session_id).single().execute()
+        return jsonify(updated_session.data), 200
+    except Exception as e:
         return jsonify({"error": "Failed to update session"}), 500
-
-    # Return the updated session
-    updated_session = supabase.table("workout_session").select("*").eq("id", session_id).single().execute()
-    return jsonify(updated_session.data), 200
-
